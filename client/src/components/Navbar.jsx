@@ -46,24 +46,24 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 w-full border-b border-[#e6e0cf] bg-[#fbfaf6]">
       <div className="flex w-full items-center justify-between gap-4 px-4 py-3 sm:px-8 lg:px-12">
         {/* Left: Menu + Brand */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2.5 sm:gap-4">
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Open menu"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#e6e0cf] bg-white text-[#1f2e18] hover:bg-[#f7f4eb]"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#e6e0cf] bg-white text-[#1f2e18] hover:bg-[#f7f4eb]"
           >
             {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
 
           <Link to="/" className="flex flex-col leading-none">
-            <div className="flex items-center gap-1.5">
-              <span className="font-serif-display text-2xl font-bold tracking-tight text-[#2c4c17]">
+            <div className="flex items-center gap-1">
+              <span className="font-serif-display text-lg font-bold tracking-tight text-[#2c4c17] sm:text-2xl">
                 VirarOrganics
               </span>
-              <Leaf className="h-4 w-4 text-[#4a7c26]" />
+              <Leaf className="h-3.5 w-3.5 text-[#4a7c26] sm:h-4 sm:w-4" />
             </div>
-            <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.26em] text-[#6d7465]">
+            <span className="mt-0.5 text-[8px] font-semibold uppercase tracking-[0.22em] text-[#6d7465] sm:text-[9px] sm:tracking-[0.26em]">
               — FARM TO HOME —
             </span>
           </Link>
@@ -91,7 +91,7 @@ export default function Navbar() {
         </form>
 
         {/* Right: Bulk Enquiry, Orders, Account, Cart */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link
             to="/bulk-enquiry"
             className="hidden items-center gap-1.5 rounded-full border border-[#dfd9c8] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#2c4c17] hover:bg-[#f7f4eb] lg:flex"

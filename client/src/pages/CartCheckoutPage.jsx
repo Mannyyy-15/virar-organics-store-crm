@@ -159,14 +159,14 @@ export default function CartCheckoutPage() {
           {items.map(({ product, quantity }) => (
             <div
               key={product.id}
-              className="flex items-center justify-between gap-4 rounded-xl border border-stone-200 bg-white p-4"
+              className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="flex items-center gap-3">
                 {product.image_url && (
                   <img
                     src={product.image_url}
                     alt={product.name}
-                    className="h-16 w-16 rounded-lg object-cover"
+                    className="h-16 w-16 shrink-0 rounded-lg object-cover"
                   />
                 )}
                 <div>
@@ -179,7 +179,7 @@ export default function CartCheckoutPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between gap-3 sm:justify-end">
                 <div className="flex items-center rounded-lg border border-stone-300">
                   <button
                     type="button"

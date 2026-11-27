@@ -100,67 +100,76 @@ export default function StorePage() {
 
   return (
     <div className="w-full bg-white">
-      {/* Full-Width 100vh Full-Bleed Hero Section */}
-      <section className="relative flex min-h-[calc(100vh-66px)] w-full items-center overflow-hidden border-b border-[#e6e0cf] bg-[#f7f4eb]">
-        {/* Full-bleed background image */}
+      {/* Full-Width 100vh Full-Bleed Hero Section (Responsive: stacked on mobile, full-bleed on desktop) */}
+      <section className="relative w-full overflow-hidden border-b border-[#e6e0cf] bg-[#f7f4eb] lg:flex lg:min-h-[calc(100vh-66px)] lg:items-center">
+        {/* Desktop Full-bleed background image */}
         <img
           src="/images/hero-bg.jpg"
           alt="Fresh Organic Farm Produce"
-          className="absolute inset-0 h-full w-full object-cover object-right"
+          className="hidden lg:block lg:absolute lg:inset-0 lg:h-full lg:w-full lg:object-cover lg:object-right"
         />
-        {/* Subtle left cream gradient for crisp text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#f7f4eb]/95 via-[#f7f4eb]/75 to-transparent lg:via-[#f7f4eb]/35" />
+        {/* Smooth cream gradient that blends the left 45% seamlessly into the kitchen counter */}
+        <div className="hidden lg:block lg:absolute lg:inset-0 lg:bg-gradient-to-r lg:from-[#f7f4eb] lg:via-[#f7f4eb]/95 lg:via-42% lg:to-transparent" />
 
-        <div className="relative z-10 flex w-full flex-col justify-between px-4 py-12 sm:px-8 lg:px-12 lg:py-16">
+        <div className="relative z-10 flex w-full flex-col justify-between px-4 py-8 sm:px-8 lg:px-12 lg:py-16">
           <div className="max-w-xl">
-            <h1 className="font-serif-display text-5xl font-bold leading-[1.08] tracking-tight text-[#1f2e18] sm:text-6xl xl:text-[68px]">
+            <h1 className="font-serif-display text-4xl font-bold leading-[1.08] tracking-tight text-[#1f2e18] sm:text-5xl xl:text-[68px]">
               Fresh Groceries, <br />
-              Better Living. <Leaf className="inline h-9 w-9 text-[#4a7c26]" />
+              Better Living. <Leaf className="inline h-7 w-7 text-[#4a7c26] sm:h-9 sm:w-9" />
             </h1>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-[#3f4a38] sm:text-lg">
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-[#3f4a38] sm:mt-5 sm:text-lg">
               Farm-fresh organic staples, cold-pressed oils, A2 Bilona ghee &amp; more – delivered fresh to your home.
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center gap-3 sm:mt-7">
               <a
                 href="#bestsellers"
-                className="inline-flex items-center gap-2 rounded-full bg-[#38661d] px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-[#2c5216]"
+                className="inline-flex items-center gap-2 rounded-full bg-[#38661d] px-6 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-[#2c5216] sm:px-7 sm:py-3.5"
               >
                 Shop Now <ArrowRight className="h-4 w-4" />
               </a>
               <Link
                 to="/bulk-enquiry"
-                className="inline-flex items-center gap-2 rounded-full border border-[#38661d] bg-white/90 px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-[#38661d] backdrop-blur-xs transition-colors hover:bg-white"
+                className="inline-flex items-center gap-2 rounded-full border border-[#38661d] bg-white px-6 py-3 text-xs font-bold uppercase tracking-wider text-[#38661d] transition-colors hover:bg-[#f0ede2] sm:px-7 sm:py-3.5"
               >
                 Bulk Enquiry
               </Link>
             </div>
           </div>
 
+          {/* Mobile Hero Image (cleanly stacked below CTA on phones/tablets) */}
+          <div className="mt-6 overflow-hidden rounded-2xl border border-[#e6e0cf] bg-white shadow-xs lg:hidden">
+            <img
+              src="/images/hero-bg.jpg"
+              alt="Fresh Organic Farm Produce"
+              className="h-56 w-full object-cover object-right sm:h-72"
+            />
+          </div>
+
           {/* Floating Trust Strip at bottom-left of Hero */}
-          <div className="mt-12 grid max-w-2xl grid-cols-2 gap-4 rounded-2xl border border-[#e6e0cf] bg-white/95 p-4 shadow-sm backdrop-blur-xs sm:grid-cols-4">
-            <div className="flex items-center gap-2.5">
+          <div className="mt-6 grid max-w-2xl grid-cols-2 gap-3 rounded-2xl border border-[#e6e0cf] bg-white/95 p-3.5 shadow-sm backdrop-blur-xs sm:mt-10 sm:grid-cols-4 sm:gap-4 sm:p-4">
+            <div className="flex items-center gap-2">
               <Leaf className="h-5 w-5 shrink-0 text-[#38661d]" />
               <div className="leading-tight">
                 <p className="text-xs font-bold text-[#1f2e18]">Farm Fresh</p>
                 <p className="text-[10px] text-[#6d7465]">Sourced Daily</p>
               </div>
             </div>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               <Award className="h-5 w-5 shrink-0 text-[#38661d]" />
               <div className="leading-tight">
                 <p className="text-xs font-bold text-[#1f2e18]">Best Quality</p>
                 <p className="text-[10px] text-[#6d7465]">Handpicked</p>
               </div>
             </div>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               <Truck className="h-5 w-5 shrink-0 text-[#38661d]" />
               <div className="leading-tight">
                 <p className="text-xs font-bold text-[#1f2e18]">Fast Delivery</p>
                 <p className="text-[10px] text-[#6d7465]">On Time</p>
               </div>
             </div>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               <RotateCcw className="h-5 w-5 shrink-0 text-[#38661d]" />
               <div className="leading-tight">
                 <p className="text-xs font-bold text-[#1f2e18]">Easy Returns</p>
@@ -327,13 +336,13 @@ export default function StorePage() {
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="hidden gap-2 md:flex">
+            <div className="flex w-full items-center gap-3 overflow-x-auto pb-1 md:w-auto">
+              <div className="flex gap-2">
                 {['All', ...categories].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => selectCategory(cat)}
-                    className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                       urlCategory === cat
                         ? 'bg-[#38661d] text-white'
                         : 'border border-[#e6e0cf] bg-white text-[#4f5947] hover:bg-[#f7f4eb]'
@@ -345,7 +354,7 @@ export default function StorePage() {
               </div>
               <button
                 onClick={() => selectCategory('All')}
-                className="text-xs font-bold uppercase tracking-wider text-[#38661d] hover:underline"
+                className="shrink-0 text-xs font-bold uppercase tracking-wider text-[#38661d] hover:underline"
               >
                 View All
               </button>
