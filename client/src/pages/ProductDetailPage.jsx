@@ -95,10 +95,10 @@ export default function ProductDetailPage() {
       </nav>
 
       {/* Main Product Card */}
-      <div className="grid grid-cols-1 gap-8 rounded-2xl border border-[#e6e0cf] bg-white p-4 shadow-xs sm:p-8 lg:grid-cols-12">
+      <div className="grid grid-cols-1 gap-8 rounded-2xl border border-[#cfc6ad] bg-white p-4 shadow-sm sm:p-8 lg:grid-cols-12">
         {/* Left: Product Image */}
         <div className="lg:col-span-6">
-          <div className="relative overflow-hidden rounded-2xl border border-[#e6e0cf] bg-[#faf9f5]">
+          <div className="relative overflow-hidden rounded-2xl border border-[#cfc6ad] bg-[#faf9f5]">
             {product.image_url ? (
               <img
                 src={product.image_url}

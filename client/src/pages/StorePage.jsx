@@ -194,13 +194,13 @@ export default function StorePage() {
                 <button
                   key={cat}
                   onClick={() => selectCategory(active ? 'All' : cat)}
-                  className={`flex flex-col items-center rounded-2xl border p-4 text-center transition-all hover:shadow-xs ${
+                  className={`flex flex-col items-center rounded-2xl border p-4 text-center transition-all hover:shadow-sm ${
                     active
-                      ? 'border-[#38661d] bg-[#eef5e8] ring-1 ring-[#38661d]'
-                      : 'border-[#e6e0cf] bg-[#f7f4eb] hover:border-[#c8bfa6]'
+                      ? 'border-[#38661d] bg-[#eef5e8] ring-2 ring-[#38661d]/20'
+                      : 'border-[#cfc6ad] bg-[#f7f4eb] hover:border-[#38661d]/60'
                   }`}
                 >
-                  <div className="mb-2.5 flex h-11 w-11 items-center justify-center rounded-full border border-[#e6e0cf] bg-white text-[#38661d]">
+                  <div className="mb-2.5 flex h-11 w-11 items-center justify-center rounded-full border border-[#cfc6ad] bg-white text-[#38661d]">
                     <Icon className="h-5 w-5" />
                   </div>
                   <span className="text-sm font-bold text-[#1f2e18]">{cat}</span>
@@ -212,9 +212,9 @@ export default function StorePage() {
             {/* 6th Tile: Bulk / Wholesale */}
             <Link
               to="/bulk-enquiry"
-              className="flex flex-col items-center rounded-2xl border border-[#e6e0cf] bg-[#f7f4eb] p-4 text-center transition-all hover:border-[#38661d] hover:shadow-xs"
+              className="flex flex-col items-center rounded-2xl border border-[#cfc6ad] bg-[#f7f4eb] p-4 text-center transition-all hover:border-[#38661d] hover:shadow-sm"
             >
-              <div className="mb-2.5 flex h-11 w-11 items-center justify-center rounded-full border border-[#e6e0cf] bg-white text-[#38661d]">
+              <div className="mb-2.5 flex h-11 w-11 items-center justify-center rounded-full border border-[#cfc6ad] bg-white text-[#38661d]">
                 <Package className="h-5 w-5" />
               </div>
               <span className="text-sm font-bold text-[#1f2e18]">Bulk Orders</span>
@@ -386,11 +386,11 @@ export default function StorePage() {
                 return (
                   <div
                     key={product.id}
-                    className="flex flex-col rounded-xl border border-[#e6e0cf] bg-white p-3.5 transition-all hover:border-[#38661d]/50 hover:shadow-sm"
+                    className="flex flex-col rounded-xl border border-[#cfc6ad] bg-white p-3.5 shadow-[0_1px_4px_rgba(31,46,24,0.06)] transition-all hover:border-[#38661d] hover:shadow-md"
                   >
                     <Link
                       to={`/products/${product.id}`}
-                      className="relative mb-3 block overflow-hidden rounded-lg border border-[#f0ece0] bg-[#faf9f5]"
+                      className="relative mb-3 block overflow-hidden rounded-lg border border-[#dfd9c8] bg-[#faf9f5]"
                     >
                       {product.image_url ? (
                         <img
@@ -473,7 +473,7 @@ export default function StorePage() {
               {quickReorderItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-[#e6e0cf] bg-white p-3 transition-colors hover:border-[#38661d]/50"
+                  className="flex items-center justify-between gap-3 rounded-xl border border-[#cfc6ad] bg-white p-3 shadow-[0_1px_3px_rgba(31,46,24,0.05)] transition-colors hover:border-[#38661d]"
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
                     <img
@@ -507,7 +507,7 @@ export default function StorePage() {
         )}
 
         {/* Bottom 4-Column Trust Bar */}
-        <section className="grid grid-cols-1 gap-4 rounded-2xl border border-[#e6e0cf] bg-[#f7f4eb] p-6 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="grid grid-cols-1 gap-4 rounded-2xl border border-[#cfc6ad] bg-[#f7f4eb] p-6 sm:grid-cols-2 lg:grid-cols-4">
           <div className="flex items-start gap-3">
             <Leaf className="mt-0.5 h-7 w-7 shrink-0 text-[#38661d]" />
             <div>
