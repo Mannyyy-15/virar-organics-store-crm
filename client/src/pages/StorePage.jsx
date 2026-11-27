@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import {
   ShoppingCart,
   Check,
@@ -10,20 +10,23 @@ import {
   Sparkles,
   Flame,
   Package,
+  Star,
+  Send,
 } from 'lucide-react';
 import { apiFetch } from '../api';
 import { useCart } from '../context/CartContext';
 
-const CATEGORY_META = {
-  'Honey & Sweeteners': { bg: 'bg-amber-50 hover:border-amber-300', icon: Sparkles, color: 'text-amber-600' },
-  'Ghee & Dairy': { bg: 'bg-orange-50 hover:border-orange-300', icon: Droplets, color: 'text-orange-600' },
-  'Cold-Pressed Oils': { bg: 'bg-emerald-50 hover:border-emerald-300', icon: Sprout, color: 'text-emerald-600' },
-  'Grains & Flours': { bg: 'bg-lime-50 hover:border-lime-300', icon: Wheat, color: 'text-lime-700' },
-  'Spices & Herbs': { bg: 'bg-rose-50 hover:border-rose-300', icon: Flame, color: 'text-rose-600' },
-};
+const CATEGORY_TILES = [
+  { bg: 'bg-[#f2fce4]', icon: Sparkles, color: 'text-amber-600' },
+  { bg: 'bg-[#fffceb]', icon: Droplets, color: 'text-orange-600' },
+  { bg: 'bg-[#ecffec]', icon: Sprout, color: 'text-emerald-600' },
+  { bg: 'bg-[#feefea]', icon: Wheat, color: 'text-amber-700' },
+  { bg: 'bg-[#fff3ff]', icon: Flame, color: 'text-rose-600' },
+];
 
 export default function StorePage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const urlCategory = searchParams.get('category') || 'All';
   const urlSearch = searchParams.get('search') || '';
 
@@ -32,9 +35,9 @@ export default function StorePage() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [addedId, setAddedId] = useState(null);
+  const [heroEmail, setHeroEmail] = useState('');
   const { addItem } = useCart();
 
-  // Load categories and all products once for category counts & Daily Best Sells
   useEffect(() => {
     apiFetch('/products/categories')
       .then((res) => setCategories(res.categories || []))
@@ -44,7 +47,6 @@ export default function StorePage() {
       .catch(() => {});
   }, []);
 
-  // Load filtered products whenever URL params change
   useEffect(() => {
     setLoading(true);
     const params = new URLSearchParams();
@@ -70,46 +72,54 @@ export default function StorePage() {
     setTimeout(() => setAddedId(null), 1200);
   }
 
+  function handleHeroSubscribe(e) {
+    e.preventDefault();
+    navigate(`/bulk-enquiry${heroEmail ? `?email=${encodeURIComponent(heroEmail)}` : ''}`);
+  }
+
   const bestSellers = allProducts.filter((p) => p.stock > 0).slice(0, 4);
 
   return (
-    <div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-6">
-      {/* Hero Banner (Full-Width Mint Card) */}
-      <section className="relative mb-10 overflow-hidden rounded-3xl bg-[#d8f1e5] px-6 py-10 sm:px-12 sm:py-14">
+    <div className="w-full px-4 py-6 sm:px-8 lg:px-12">
+      {/* Hero Banner — Full Width Nest Style */}
+      <section className="relative mb-10 overflow-hidden rounded-3xl bg-[#d8f1e5] px-6 py-10 sm:px-14 sm:py-16">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <span className="inline-block rounded-full bg-white/80 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-emerald-800">
-              100% Certified Organic Store
-            </span>
-            <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-stone-900 sm:text-5xl">
-              Pure Organic Foods <br className="hidden sm:block" />
+            <h1 className="text-4xl font-extrabold leading-[1.12] tracking-tight text-[#253d4e] sm:text-5xl xl:text-6xl">
+              Fresh Organic Foods <br />
               Direct From Farm
             </h1>
-            <p className="mt-4 max-w-xl text-base text-stone-600 sm:text-lg">
-              Fresh cold-pressed oils, A2 Bilona ghee, raw forest honey, and heirloom grains — with real-time stock accuracy.
+            <p className="mt-4 text-base text-[#7e7e7e] sm:text-xl">
+              Save up to 30% on farm-direct staples &amp; wholesale orders
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              <a
-                href="#popular-products"
-                className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-emerald-700"
+            {/* Nest-style Pill Input */}
+            <form
+              onSubmit={handleHeroSubscribe}
+              className="mt-8 flex max-w-md items-center overflow-hidden rounded-full bg-white p-1.5 shadow-sm"
+            >
+              <Send className="ml-3.5 h-4 w-4 shrink-0 text-[#7e7e7e]" />
+              <input
+                type="email"
+                value={heroEmail}
+                onChange={(e) => setHeroEmail(e.target.value)}
+                placeholder="Your email for wholesale deals"
+                className="flex-1 bg-transparent px-3 py-2 text-sm text-[#253d4e] placeholder:text-[#999] focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="rounded-full bg-[#3bb77e] px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#29a56c]"
               >
-                Shop Now <ArrowRight className="h-4 w-4" />
-              </a>
-              <Link
-                to="/bulk-enquiry"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-stone-800 shadow-xs transition-colors hover:bg-stone-50"
-              >
-                Bulk &amp; Wholesale Quote
-              </Link>
-            </div>
+                Get Quote
+              </button>
+            </form>
           </div>
 
-          <div className="hidden lg:col-span-5 lg:block">
+          <div className="hidden lg:col-span-5 lg:flex lg:justify-end">
             <img
               src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80"
-              alt="Fresh Organic Groceries"
-              className="h-72 w-full rounded-2xl object-cover shadow-md"
+              alt="Fresh Organic Vegetables & Groceries"
+              className="h-80 w-full max-w-lg rounded-2xl object-cover shadow-md"
             />
           </div>
         </div>
@@ -118,25 +128,34 @@ export default function StorePage() {
       {/* Featured Categories */}
       <section className="mb-10">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-2xl font-bold text-stone-900">Featured Categories</h2>
+          <div className="flex items-baseline gap-6">
+            <h2 className="text-2xl font-extrabold text-[#253d4e]">Featured Categories</h2>
+            <div className="hidden gap-4 text-sm font-semibold text-[#253d4e] md:flex">
+              {categories.slice(0, 4).map((c) => (
+                <button
+                  key={c}
+                  onClick={() => selectCategory(c)}
+                  className="hover:text-[#3bb77e]"
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
           {urlCategory !== 'All' && (
             <button
               onClick={() => selectCategory('All')}
-              className="text-sm font-semibold text-emerald-700 hover:underline"
+              className="text-sm font-bold text-[#3bb77e] hover:underline"
             >
-              Show All Categories
+              Show All →
             </button>
           )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {categories.map((cat) => {
-            const meta = CATEGORY_META[cat] || {
-              bg: 'bg-stone-50 hover:border-stone-300',
-              icon: Package,
-              color: 'text-emerald-700',
-            };
-            const Icon = meta.icon;
+          {categories.map((cat, idx) => {
+            const tile = CATEGORY_TILES[idx % CATEGORY_TILES.length];
+            const Icon = tile.icon;
             const count = allProducts.filter((p) => p.category === cat).length;
             const active = urlCategory === cat;
 
@@ -144,15 +163,15 @@ export default function StorePage() {
               <button
                 key={cat}
                 onClick={() => selectCategory(active ? 'All' : cat)}
-                className={`flex flex-col items-center justify-center rounded-2xl border p-5 text-center transition-all ${
-                  meta.bg
-                } ${active ? 'border-emerald-600 ring-2 ring-emerald-600/20' : 'border-stone-200/80'}`}
+                className={`flex flex-col items-center justify-center rounded-2xl border p-6 text-center transition-all hover:shadow-sm ${
+                  tile.bg
+                } ${active ? 'border-[#3bb77e] ring-2 ring-[#3bb77e]/25' : 'border-[#ececec]'}`}
               >
-                <div className={`mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-2xs ${meta.color}`}>
-                  <Icon className="h-6 w-6" />
+                <div className={`mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-2xs ${tile.color}`}>
+                  <Icon className="h-7 w-7" />
                 </div>
-                <span className="text-sm font-bold text-stone-900">{cat}</span>
-                <span className="mt-0.5 text-xs text-stone-500">{count} items</span>
+                <span className="text-sm font-bold text-[#253d4e]">{cat}</span>
+                <span className="mt-1 text-xs text-[#7e7e7e]">{count} items</span>
               </button>
             );
           })}
@@ -160,71 +179,81 @@ export default function StorePage() {
       </section>
 
       {/* 3 Promotional Banners */}
-      <section className="mb-12 grid grid-cols-1 gap-5 md:grid-cols-3">
-        <div className="flex flex-col justify-between rounded-2xl bg-[#f0e8d5] p-6">
-          <div>
-            <h3 className="text-lg font-bold text-stone-900">
-              Everyday Fresh &amp; Clean with Cold-Pressed Oils
+      <section className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="flex items-center justify-between gap-4 overflow-hidden rounded-2xl bg-[#f0e8d5] p-7">
+          <div className="max-w-[60%]">
+            <h3 className="text-xl font-extrabold leading-snug text-[#253d4e]">
+              Everyday Fresh &amp; Clean with Our Oils
             </h3>
-            <p className="mt-1 text-xs text-stone-600">Wood-pressed Lakdi Ghani oils</p>
+            <button
+              onClick={() => selectCategory('Cold-Pressed Oils')}
+              className="mt-5 inline-flex items-center gap-1.5 rounded-md bg-[#3bb77e] px-4 py-2 text-xs font-bold text-white hover:bg-[#29a56c]"
+            >
+              Shop Now <ArrowRight className="h-3.5 w-3.5" />
+            </button>
           </div>
-          <button
-            onClick={() => selectCategory('Cold-Pressed Oils')}
-            className="mt-5 inline-flex w-fit items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700"
-          >
-            Shop Now <ArrowRight className="h-3.5 w-3.5" />
-          </button>
+          <img
+            src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=300&q=80"
+            alt="Cold-Pressed Oil"
+            className="h-28 w-28 rounded-xl object-cover shadow-xs"
+          />
         </div>
 
-        <div className="flex flex-col justify-between rounded-2xl bg-[#f3e8e8] p-6">
-          <div>
-            <h3 className="text-lg font-bold text-stone-900">
-              Make your Breakfast Healthy with A2 Bilona Ghee
+        <div className="flex items-center justify-between gap-4 overflow-hidden rounded-2xl bg-[#f3e8e8] p-7">
+          <div className="max-w-[60%]">
+            <h3 className="text-xl font-extrabold leading-snug text-[#253d4e]">
+              Make your Breakfast Healthy &amp; Pure
             </h3>
-            <p className="mt-1 text-xs text-stone-600">Traditional hand-churned purity</p>
+            <button
+              onClick={() => selectCategory('Ghee & Dairy')}
+              className="mt-5 inline-flex items-center gap-1.5 rounded-md bg-[#3bb77e] px-4 py-2 text-xs font-bold text-white hover:bg-[#29a56c]"
+            >
+              Shop Now <ArrowRight className="h-3.5 w-3.5" />
+            </button>
           </div>
-          <button
-            onClick={() => selectCategory('Ghee & Dairy')}
-            className="mt-5 inline-flex w-fit items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700"
-          >
-            Shop Now <ArrowRight className="h-3.5 w-3.5" />
-          </button>
+          <img
+            src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=300&q=80"
+            alt="A2 Bilona Ghee"
+            className="h-28 w-28 rounded-xl object-cover shadow-xs"
+          />
         </div>
 
-        <div className="flex flex-col justify-between rounded-2xl bg-[#e7eaf3] p-6">
-          <div>
-            <h3 className="text-lg font-bold text-stone-900">
-              Wholesale &amp; Bulk Orders for Cafes &amp; Societies
+        <div className="flex items-center justify-between gap-4 overflow-hidden rounded-2xl bg-[#e7eaf3] p-7">
+          <div className="max-w-[60%]">
+            <h3 className="text-xl font-extrabold leading-snug text-[#253d4e]">
+              The best Organic Products Online
             </h3>
-            <p className="mt-1 text-xs text-stone-600">Direct farm pricing &amp; CRM tracking</p>
+            <Link
+              to="/bulk-enquiry"
+              className="mt-5 inline-flex items-center gap-1.5 rounded-md bg-[#3bb77e] px-4 py-2 text-xs font-bold text-white hover:bg-[#29a56c]"
+            >
+              Bulk Order <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
-          <Link
-            to="/bulk-enquiry"
-            className="mt-5 inline-flex w-fit items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700"
-          >
-            Enquire Now <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+          <img
+            src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=300&q=80"
+            alt="Raw Forest Honey"
+            className="h-28 w-28 rounded-xl object-cover shadow-xs"
+          />
         </div>
       </section>
 
-      {/* Popular Products */}
+      {/* Popular Products — 5-Column Nest Grid */}
       <section id="popular-products" className="mb-14">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-stone-900">
-              {urlSearch ? `Search results for "${urlSearch}"` : 'Popular Products'}
-            </h2>
-          </div>
+          <h2 className="text-2xl font-extrabold text-[#253d4e]">
+            {urlSearch ? `Search results for "${urlSearch}"` : 'Popular Products'}
+          </h2>
 
           <div className="flex flex-wrap gap-2">
             {['All', ...categories].map((cat) => (
               <button
                 key={cat}
                 onClick={() => selectCategory(cat)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+                className={`px-2.5 py-1 text-sm font-semibold transition-colors ${
                   urlCategory === cat
-                    ? 'bg-emerald-600 text-white'
-                    : 'text-stone-600 hover:bg-stone-100 hover:text-emerald-700'
+                    ? 'text-[#3bb77e]'
+                    : 'text-[#253d4e] hover:text-[#3bb77e]'
                 }`}
               >
                 {cat}
@@ -234,23 +263,23 @@ export default function StorePage() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
             {[...Array(10)].map((_, i) => (
-              <div key={i} className="h-80 animate-pulse rounded-2xl border border-stone-200 bg-stone-100" />
+              <div key={i} className="h-80 animate-pulse rounded-2xl border border-[#ececec] bg-stone-50" />
             ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="rounded-2xl border border-stone-200 bg-white p-12 text-center">
-            <p className="text-stone-600">No organic products matched your search.</p>
+          <div className="rounded-2xl border border-[#ececec] bg-white p-12 text-center">
+            <p className="text-[#7e7e7e]">No organic products matched your search.</p>
             <button
               onClick={() => setSearchParams({})}
-              className="mt-3 text-sm font-semibold text-emerald-700 hover:underline"
+              className="mt-3 text-sm font-bold text-[#3bb77e] hover:underline"
             >
               Reset Filters
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
             {products.map((product) => {
               const outOfStock = product.stock <= 0;
               const lastFew = product.stock > 0 && product.stock <= 3;
@@ -258,18 +287,18 @@ export default function StorePage() {
               return (
                 <div
                   key={product.id}
-                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white p-4 transition-all hover:border-emerald-300 hover:shadow-md"
+                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-[#ececec] bg-white p-5 transition-all hover:border-[#bce3c9] hover:shadow-md"
                 >
-                  {/* Top-left Nest-style badge */}
+                  {/* Flush Nest-style corner badge */}
                   <span
-                    className={`absolute left-0 top-0 z-10 rounded-br-xl px-3 py-1 text-[11px] font-bold text-white ${
-                      outOfStock ? 'bg-red-500' : lastFew ? 'bg-amber-500' : 'bg-emerald-500'
+                    className={`absolute left-0 top-0 z-10 rounded-br-2xl px-3.5 py-1 text-[11px] font-bold text-white ${
+                      outOfStock ? 'bg-[#f74b81]' : lastFew ? 'bg-[#f59758]' : 'bg-[#3bb77e]'
                     }`}
                   >
-                    {outOfStock ? 'Out of Stock' : lastFew ? `Only ${product.stock} left` : 'In Stock'}
+                    {outOfStock ? 'Out of Stock' : lastFew ? `Only ${product.stock} Left` : 'Fresh'}
                   </span>
 
-                  <Link to={`/products/${product.id}`} className="mb-3 block overflow-hidden rounded-xl bg-stone-50">
+                  <Link to={`/products/${product.id}`} className="mb-4 mt-3 block overflow-hidden rounded-xl bg-white">
                     {product.image_url ? (
                       <img
                         src={product.image_url}
@@ -278,36 +307,40 @@ export default function StorePage() {
                       />
                     ) : (
                       <div className="flex h-44 items-center justify-center text-stone-300">
-                        <Sprout className="h-10 w-10" />
+                        <Package className="h-10 w-10" />
                       </div>
                     )}
                   </Link>
 
-                  <span className="text-[11px] font-medium text-stone-400">{product.category}</span>
+                  <span className="text-[11px] font-medium text-[#adadad]">{product.category}</span>
                   <Link
                     to={`/products/${product.id}`}
-                    className="mt-1 line-clamp-2 font-bold text-stone-900 hover:text-emerald-700"
+                    className="mt-1 line-clamp-2 text-[15px] font-bold leading-snug text-[#253d4e] hover:text-[#3bb77e]"
                   >
                     {product.name}
                   </Link>
-                  <p className="mt-1 text-xs text-stone-500">
-                    By <span className="font-semibold text-emerald-700">Virar Organics</span> • {product.unit}
+
+                  <div className="mt-1.5 flex items-center gap-1 text-xs text-[#7e7e7e]">
+                    <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                    <span>(4.8)</span>
+                  </div>
+
+                  <p className="mt-1 text-xs text-[#7e7e7e]">
+                    By <span className="font-semibold text-[#3bb77e]">Virar Organics</span> • {product.unit}
                   </p>
 
                   <div className="mt-auto flex items-center justify-between pt-4">
-                    <div>
-                      <span className="text-lg font-extrabold text-emerald-600">₹{product.price}</span>
-                    </div>
+                    <span className="text-lg font-extrabold text-[#3bb77e]">₹{product.price}</span>
 
                     <button
                       disabled={outOfStock}
                       onClick={() => handleAdd(product)}
-                      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${
+                      className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-2 text-xs font-bold transition-colors ${
                         outOfStock
                           ? 'cursor-not-allowed bg-stone-100 text-stone-400'
                           : addedId === product.id
-                            ? 'bg-emerald-600 text-white'
-                            : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white'
+                            ? 'bg-[#3bb77e] text-white'
+                            : 'bg-[#def9ec] text-[#3bb77e] hover:bg-[#3bb77e] hover:text-white'
                       }`}
                     >
                       {addedId === product.id ? (
@@ -328,69 +361,66 @@ export default function StorePage() {
         )}
       </section>
 
-      {/* Daily Best Sells Section (Matching Reference) */}
+      {/* Daily Best Sells */}
       {bestSellers.length > 0 && (
-        <section className="mb-6">
-          <h2 className="mb-5 text-2xl font-bold text-stone-900">Daily Best Sells</h2>
+        <section className="mb-8">
+          <h2 className="mb-5 text-2xl font-extrabold text-[#253d4e]">Daily Best Sells</h2>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-5">
-            {/* Left Nature Promo Card */}
-            <div className="flex flex-col justify-between rounded-2xl bg-gradient-to-b from-emerald-800 to-emerald-950 p-6 text-white">
+            <div className="flex flex-col justify-between rounded-2xl bg-gradient-to-br from-[#2a5c45] to-[#133827] p-7 text-white">
               <div>
-                <h3 className="text-2xl font-extrabold leading-snug">
+                <h3 className="text-3xl font-extrabold leading-tight">
                   Bring nature into your home
                 </h3>
-                <p className="mt-2 text-xs text-emerald-100">
-                  Freshly harvested organic staples restocked every morning.
+                <p className="mt-3 text-sm text-emerald-100">
+                  Pure, lab-tested organic staples restocked daily.
                 </p>
               </div>
               <a
                 href="#popular-products"
-                className="mt-6 inline-flex w-fit items-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-400"
+                className="mt-6 inline-flex w-fit items-center gap-1.5 rounded-md bg-[#3bb77e] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#29a56c]"
               >
                 Shop Now <ArrowRight className="h-3.5 w-3.5" />
               </a>
             </div>
 
-            {/* 4 Featured Cards with Stock Bar */}
             {bestSellers.map((product) => {
               const pct = Math.min(100, Math.round((product.stock / 50) * 100));
               return (
                 <div
                   key={product.id}
-                  className="flex flex-col rounded-2xl border border-stone-200 bg-white p-4 transition-shadow hover:shadow-md"
+                  className="flex flex-col rounded-2xl border border-[#ececec] bg-white p-5 transition-shadow hover:shadow-md"
                 >
-                  <Link to={`/products/${product.id}`} className="mb-3 block overflow-hidden rounded-xl bg-stone-50">
+                  <Link to={`/products/${product.id}`} className="mb-3 block overflow-hidden rounded-xl">
                     <img
                       src={product.image_url}
                       alt={product.name}
                       className="h-40 w-full object-cover"
                     />
                   </Link>
-                  <span className="text-[11px] font-medium text-stone-400">{product.category}</span>
+                  <span className="text-[11px] font-medium text-[#adadad]">{product.category}</span>
                   <Link
                     to={`/products/${product.id}`}
-                    className="mt-1 line-clamp-1 font-bold text-stone-900 hover:text-emerald-700"
+                    className="mt-1 line-clamp-1 font-bold text-[#253d4e] hover:text-[#3bb77e]"
                   >
                     {product.name}
                   </Link>
-                  <div className="mt-2 text-lg font-extrabold text-emerald-600">₹{product.price}</div>
+                  <div className="mt-2 text-lg font-extrabold text-[#3bb77e]">₹{product.price}</div>
 
-                  {/* Stock indicator bar */}
                   <div className="mt-3">
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-stone-100">
-                      <div className="h-full rounded-full bg-emerald-500" style={{ width: `${pct}%` }} />
+                      <div className="h-full rounded-full bg-[#3bb77e]" style={{ width: `${pct}%` }} />
                     </div>
-                    <p className="mt-1 text-[11px] font-medium text-stone-500">
+                    <p className="mt-1 text-[11px] font-medium text-[#7e7e7e]">
                       Available: {product.stock} {product.unit}
                     </p>
                   </div>
 
                   <button
                     onClick={() => handleAdd(product)}
-                    className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-600 py-2 text-xs font-bold text-white hover:bg-emerald-700"
+                    className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-md bg-[#3bb77e] py-2.5 text-xs font-bold text-white hover:bg-[#29a56c]"
                   >
                     {addedId === product.id ? <Check className="h-3.5 w-3.5" /> : <ShoppingCart className="h-3.5 w-3.5" />}
-                    {addedId === product.id ? 'Added to Cart' : 'Add to Cart'}
+                    {addedId === product.id ? 'Added to Cart' : 'Add To Cart'}
                   </button>
                 </div>
               );
