@@ -4,8 +4,10 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure DB initializes on startup
+// Ensure DB initializes on startup and auto-seed if empty (great for fresh deployments)
 require('./db');
+const seed = require('./seed');
+seed();
 
 const authRoutes = require('./routes/auth');
 const { publicRouter: productPublicRoutes, adminRouter: productAdminRoutes } = require('./routes/products');
