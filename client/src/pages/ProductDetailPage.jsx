@@ -24,8 +24,10 @@ export default function ProductDetailPage() {
   const [related, setRelated] = useState([]);
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [added, setAdded] = useState(false);
-  const { addItem } = useCart();
+  const { items: cartItems, addItem, updateQuantity } = useCart();
+
+  const cartItem = product ? cartItems.find((i) => i.product.id === product.id) : null;
+  const cartQty = cartItem?.quantity || 0;
 
   useEffect(() => {
     setLoading(true);
@@ -72,12 +74,12 @@ export default function ProductDetailPage() {
 
   function handleAddToCart() {
     addItem(product, qty);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
   }
 
   function handleBuyNow() {
-    addItem(product, qty);
+    if (cartQty === 0) {
+      addItem(product, qty);
+    }
     navigate('/cart');
   }
 
@@ -184,7 +186,7 @@ export default function ProductDetailPage() {
 
           {/* Quantity & CTA Buttons */}
           <div className="mt-7 border-t border-[#ece7d8] pt-6">
-            {!outOfStock && (
+            {!outOfStock && cartQty === 0 && (
               <div className="mb-4 flex items-center gap-4">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#6d7465]">Quantity</span>
                 <div className="inline-flex items-center rounded-full border border-[#dfd9c8] bg-[#faf9f5]">
@@ -208,20 +210,48 @@ export default function ProductDetailPage() {
             )}
 
             <div className="flex flex-col gap-3 sm:flex-row">
-              <button
-                disabled={outOfStock}
-                onClick={handleAddToCart}
-                className={`flex flex-1 items-center justify-center gap-2 rounded-full py-3.5 text-xs font-bold uppercase tracking-wider transition-colors ${
-                  outOfStock
-                    ? 'cursor-not-allowed bg-stone-100 text-stone-400'
-                    : added
-                      ? 'bg-[#2c5216] text-white'
-                      : 'bg-[#38661d] text-white hover:bg-[#2c5216]'
-                }`}
-              >
-                {added ? <Check className="h-4 w-4" /> : <ShoppingCart className="h-4 w-4" />}
-                {outOfStock ? 'Out of Stock' : added ? 'Added to Cart!' : 'Add to Cart'}
-              </button>
+              {outOfStock ? (
+                <button
+                  disabled
+                  className="flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-full bg-stone-100 py-3.5 text-xs font-bold uppercase tracking-wider text-stone-400"
+                >
+                  Out of Stock
+                </button>
+              ) : cartQty > 0 ? (
+                <div className="flex flex-1 items-center gap-3">
+                  <div className="inline-flex items-center rounded-full border-2 border-[#38661d] bg-[#38661d] text-white">
+                    <button
+                      type="button"
+                      onClick={() => updateQuantity(product.id, cartQty - 1)}
+                      className="px-4 py-3 text-base font-bold hover:bg-[#2c5216] rounded-l-full"
+                    >
+                      −
+                    </button>
+                    <span className="min-w-10 text-center text-sm font-extrabold">{cartQty} in Cart</span>
+                    <button
+                      type="button"
+                      disabled={cartQty >= product.stock}
+                      onClick={() => updateQuantity(product.id, cartQty + 1)}
+                      className="px-4 py-3 text-base font-bold hover:bg-[#2c5216] rounded-r-full disabled:opacity-40"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <Link
+                    to="/cart"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#2c5216] py-3.5 text-xs font-bold uppercase tracking-wider text-white hover:bg-[#1f3b0f]"
+                  >
+                    <Check className="h-4 w-4" /> View Cart
+                  </Link>
+                </div>
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#38661d] py-3.5 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#2c5216]"
+                >
+                  <ShoppingCart className="h-4 w-4" /> Add to Cart
+                </button>
+              )}
 
               {!outOfStock && (
                 <button

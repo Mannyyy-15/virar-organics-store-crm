@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   ArrowRight,
-  Check,
   Sprout,
   Droplets,
   Wheat,
@@ -10,6 +9,7 @@ import {
   Flame,
   Package,
   Plus,
+  Minus,
   ShieldCheck,
   Truck,
   RotateCcw,
@@ -59,8 +59,11 @@ export default function StorePage() {
   const [allProducts, setAllProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [addedId, setAddedId] = useState(null);
-  const { addItem } = useCart();
+  const { items: cartItems, addItem, updateQuantity } = useCart();
+
+  function getCartQty(productId) {
+    return cartItems.find((i) => i.product.id === productId)?.quantity || 0;
+  }
 
   useEffect(() => {
     apiFetch('/products/categories')
@@ -92,8 +95,6 @@ export default function StorePage() {
 
   function handleAdd(product) {
     addItem(product, 1);
-    setAddedId(product.id);
-    setTimeout(() => setAddedId(null), 1200);
   }
 
   const quickReorderItems = allProducts.filter((p) => p.stock > 0).slice(0, 5);
@@ -382,6 +383,7 @@ export default function StorePage() {
               {products.map((product) => {
                 const outOfStock = product.stock <= 0;
                 const lowStock = product.stock > 0 && product.stock <= 3;
+                const cartQty = getCartQty(product.id);
 
                 return (
                   <div
@@ -425,27 +427,43 @@ export default function StorePage() {
 
                     <div className="mt-auto flex items-center justify-between pt-3">
                       <span className="text-sm font-extrabold text-[#1f2e18]">Rs. {product.price}</span>
-                      <button
-                        disabled={outOfStock}
-                        onClick={() => handleAdd(product)}
-                        className={`rounded-md px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide transition-colors ${
-                          outOfStock
-                            ? 'cursor-not-allowed bg-stone-100 text-stone-400'
-                            : addedId === product.id
-                              ? 'bg-[#2c5216] text-white'
-                              : 'bg-[#38661d] text-white hover:bg-[#2c5216]'
-                        }`}
-                      >
-                        {addedId === product.id ? (
-                          <span className="inline-flex items-center gap-1">
-                            <Check className="h-3 w-3" /> Added
-                          </span>
-                        ) : outOfStock ? (
-                          'Sold'
-                        ) : (
-                          'ADD'
-                        )}
-                      </button>
+                      {outOfStock ? (
+                        <button
+                          disabled
+                          className="cursor-not-allowed rounded-md bg-stone-100 px-3.5 py-1.5 text-xs font-bold uppercase text-stone-400"
+                        >
+                          Sold
+                        </button>
+                      ) : cartQty > 0 ? (
+                        <div className="inline-flex items-center overflow-hidden rounded-md border border-[#38661d] bg-[#38661d] text-white">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(product.id, cartQty - 1)}
+                            aria-label="Decrease quantity"
+                            className="px-2 py-1.5 hover:bg-[#2c5216]"
+                          >
+                            <Minus className="h-3.5 w-3.5" />
+                          </button>
+                          <span className="min-w-6 text-center text-xs font-extrabold">{cartQty}</span>
+                          <button
+                            type="button"
+                            disabled={cartQty >= product.stock}
+                            onClick={() => updateQuantity(product.id, cartQty + 1)}
+                            aria-label="Increase quantity"
+                            className="px-2 py-1.5 hover:bg-[#2c5216] disabled:opacity-40"
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleAdd(product)}
+                          className="rounded-md bg-[#38661d] px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-white transition-colors hover:bg-[#2c5216]"
+                        >
+                          ADD
+                        </button>
+                      )}
                     </div>
                   </div>
                 );
@@ -493,13 +511,34 @@ export default function StorePage() {
                       </span>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleAdd(item)}
-                    title="Quick Add"
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#38661d] text-white hover:bg-[#2c5216]"
-                  >
-                    {addedId === item.id ? <Check className="h-3.5 w-3.5" /> : <Plus className="h-4 w-4" />}
-                  </button>
+                  {getCartQty(item.id) > 0 ? (
+                    <div className="inline-flex shrink-0 items-center overflow-hidden rounded-full bg-[#38661d] text-white">
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.id, getCartQty(item.id) - 1)}
+                        className="px-2 py-1 hover:bg-[#2c5216]"
+                      >
+                        <Minus className="h-3 w-3" />
+                      </button>
+                      <span className="min-w-5 text-center text-xs font-bold">{getCartQty(item.id)}</span>
+                      <button
+                        type="button"
+                        disabled={getCartQty(item.id) >= item.stock}
+                        onClick={() => updateQuantity(item.id, getCartQty(item.id) + 1)}
+                        className="px-2 py-1 hover:bg-[#2c5216] disabled:opacity-40"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleAdd(item)}
+                      title="Quick Add"
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#38661d] text-white hover:bg-[#2c5216]"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
