@@ -100,75 +100,72 @@ export default function StorePage() {
 
   return (
     <div className="w-full bg-white">
-      {/* Full-Width Hero Section */}
-      <section className="w-full border-b border-[#e6e0cf] bg-[#f7f4eb]">
-        <div className="grid w-full grid-cols-1 items-center gap-6 px-4 py-8 sm:px-8 lg:grid-cols-12 lg:px-12 lg:py-12">
-          {/* Left Editorial Copy */}
-          <div className="lg:col-span-6">
-            <h1 className="font-serif-display text-4xl font-bold leading-[1.1] tracking-tight text-[#1f2e18] sm:text-5xl xl:text-6xl">
+      {/* Full-Width 100vh Full-Bleed Hero Section */}
+      <section className="relative flex min-h-[calc(100vh-66px)] w-full items-center overflow-hidden border-b border-[#e6e0cf] bg-[#f7f4eb]">
+        {/* Full-bleed background image */}
+        <img
+          src="/images/hero-bg.jpg"
+          alt="Fresh Organic Farm Produce"
+          className="absolute inset-0 h-full w-full object-cover object-right"
+        />
+        {/* Subtle left cream gradient for crisp text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#f7f4eb]/95 via-[#f7f4eb]/75 to-transparent lg:via-[#f7f4eb]/35" />
+
+        <div className="relative z-10 flex w-full flex-col justify-between px-4 py-12 sm:px-8 lg:px-12 lg:py-16">
+          <div className="max-w-xl">
+            <h1 className="font-serif-display text-5xl font-bold leading-[1.08] tracking-tight text-[#1f2e18] sm:text-6xl xl:text-[68px]">
               Fresh Groceries, <br />
-              Better Living. <Leaf className="inline h-8 w-8 text-[#4a7c26]" />
+              Better Living. <Leaf className="inline h-9 w-9 text-[#4a7c26]" />
             </h1>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-[#4f5947]">
+            <p className="mt-5 max-w-md text-base leading-relaxed text-[#3f4a38] sm:text-lg">
               Farm-fresh organic staples, cold-pressed oils, A2 Bilona ghee &amp; more – delivered fresh to your home.
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="mt-7 flex flex-wrap items-center gap-3">
               <a
                 href="#bestsellers"
-                className="inline-flex items-center gap-2 rounded-full bg-[#38661d] px-6 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-[#2c5216]"
+                className="inline-flex items-center gap-2 rounded-full bg-[#38661d] px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-[#2c5216]"
               >
                 Shop Now <ArrowRight className="h-4 w-4" />
               </a>
               <Link
                 to="/bulk-enquiry"
-                className="inline-flex items-center gap-2 rounded-full border border-[#38661d] bg-white px-6 py-3 text-xs font-bold uppercase tracking-wider text-[#38661d] transition-colors hover:bg-[#f0ede2]"
+                className="inline-flex items-center gap-2 rounded-full border border-[#38661d] bg-white/90 px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-[#38661d] backdrop-blur-xs transition-colors hover:bg-white"
               >
                 Bulk Enquiry
               </Link>
             </div>
-
-            {/* Floating Trust Strip inside Hero */}
-            <div className="mt-8 grid grid-cols-2 gap-3 rounded-2xl border border-[#e6e0cf] bg-white p-3.5 shadow-xs sm:grid-cols-4">
-              <div className="flex items-center gap-2">
-                <Leaf className="h-5 w-5 shrink-0 text-[#38661d]" />
-                <div className="leading-tight">
-                  <p className="text-[11px] font-bold text-[#1f2e18]">Farm Fresh</p>
-                  <p className="text-[10px] text-[#6d7465]">Sourced Daily</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Award className="h-5 w-5 shrink-0 text-[#38661d]" />
-                <div className="leading-tight">
-                  <p className="text-[11px] font-bold text-[#1f2e18]">Best Quality</p>
-                  <p className="text-[10px] text-[#6d7465]">Handpicked</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Truck className="h-5 w-5 shrink-0 text-[#38661d]" />
-                <div className="leading-tight">
-                  <p className="text-[11px] font-bold text-[#1f2e18]">Fast Delivery</p>
-                  <p className="text-[10px] text-[#6d7465]">On Time</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <RotateCcw className="h-5 w-5 shrink-0 text-[#38661d]" />
-                <div className="leading-tight">
-                  <p className="text-[11px] font-bold text-[#1f2e18]">Easy Returns</p>
-                  <p className="text-[10px] text-[#6d7465]">Hassle Free</p>
-                </div>
-              </div>
-            </div>
           </div>
 
-          {/* Right Hero Photography */}
-          <div className="lg:col-span-6">
-            <div className="overflow-hidden rounded-2xl border border-[#e6e0cf] bg-white shadow-sm">
-              <img
-                src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80"
-                alt="Fresh Organic Farm Produce"
-                className="h-72 w-full object-cover sm:h-96"
-              />
+          {/* Floating Trust Strip at bottom-left of Hero */}
+          <div className="mt-12 grid max-w-2xl grid-cols-2 gap-4 rounded-2xl border border-[#e6e0cf] bg-white/95 p-4 shadow-sm backdrop-blur-xs sm:grid-cols-4">
+            <div className="flex items-center gap-2.5">
+              <Leaf className="h-5 w-5 shrink-0 text-[#38661d]" />
+              <div className="leading-tight">
+                <p className="text-xs font-bold text-[#1f2e18]">Farm Fresh</p>
+                <p className="text-[10px] text-[#6d7465]">Sourced Daily</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <Award className="h-5 w-5 shrink-0 text-[#38661d]" />
+              <div className="leading-tight">
+                <p className="text-xs font-bold text-[#1f2e18]">Best Quality</p>
+                <p className="text-[10px] text-[#6d7465]">Handpicked</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <Truck className="h-5 w-5 shrink-0 text-[#38661d]" />
+              <div className="leading-tight">
+                <p className="text-xs font-bold text-[#1f2e18]">Fast Delivery</p>
+                <p className="text-[10px] text-[#6d7465]">On Time</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <RotateCcw className="h-5 w-5 shrink-0 text-[#38661d]" />
+              <div className="leading-tight">
+                <p className="text-xs font-bold text-[#1f2e18]">Easy Returns</p>
+                <p className="text-[10px] text-[#6d7465]">Hassle Free</p>
+              </div>
             </div>
           </div>
         </div>
